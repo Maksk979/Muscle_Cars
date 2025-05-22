@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  post_service:
+    build: ./post_service
+    command: daphne -b 0.0.0.0 -p 8000 mysite.asgi:application
+    volumes:
+      - ./post_service:/app
+      - ./post_service/db.sqlite3:/app/db.sqlite3  
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=mysite.settings
+    depends_on:
+      - user_service
+
+  user_service:
+    build: ./user_service
+    command: python app.py
+    volumes:
+      - ./user_service:/app
+    ports:
+      - "5001:5001"
